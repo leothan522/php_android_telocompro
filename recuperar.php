@@ -42,7 +42,7 @@ if (empty($_POST['email'])) {
         // Mensaje
         $mail->isHTML(true);
         $mail->Subject = 'Nuevo Password';
-        $mail->Body = 'Hola, este es tu nuevo Password: <h4 style="color: blue">'.$resultado.'</h4>';
+        $mail->Body = 'Hola, este es tu nuevo Password: <h4 style="color: blue">'.$resultado.'</h4> Asegurate de guardar bien la clave, NO podras solicitar una nueva hasta mañana (24 horas).';
         $mail->AltBody = 'Este es un mensaje para los clientes que no soportan HTML.';
 
         $mail->send();
