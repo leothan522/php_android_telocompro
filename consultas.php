@@ -145,7 +145,7 @@ class Consultas
             $statement->bindParam(":id", $id);
             if ($statement->execute()) {
                 //$rows = $statement->fetch();
-                return $nueva;
+                return $nuevo_password;
             } else {
                 return false;
             }
