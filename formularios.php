@@ -24,9 +24,8 @@
     </form>
 </p>
 <p>Recuperar
-    <form action="http://laravel-app.test/forgot-password" method="post">
-		<input type="hidden" name="_token" value="N9mCTQhYjt4SdHHObmJ3P8yJwUbFHWrGX9TwH7JE">
-        <input type="text" name="email" placeholder="Email">
+    <form action="recuperar.php" method="post">
+		<input type="text" name="email" placeholder="Email">
         <input type="submit" value="enviar">
     </form>
 </p>

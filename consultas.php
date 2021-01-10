@@ -103,7 +103,6 @@ class Consultas
         $statement->execute();
         $rows = $statement->fetch();
         if ($rows) {
-
             if (password_verify($password, $rows['password'])) {
 
                 if ($password != $nuevo_password){
@@ -125,6 +124,50 @@ class Consultas
             return false;
         }
 
+    }
+
+    public function validarEmail($email)
+    {
+        $rows = null;
+        $database = new Conexion();
+        $conexion = $database->get_conexion();
+        $sql = "SELECT * FROM `users` WHERE `email` = '$email'";
+        $statement = $conexion->prepare($sql);
+        $statement->execute();
+        $rows = $statement->fetch();
+        if ($rows) {
+            return $rows['id'];
+        } else {
+            return false;
+        }
+    }
+	
+	public function recuperarPassword($id, $nuevo_password)
+    {
+        $rows = null;
+        $database = new Conexion();
+        $conexion = $database->get_conexion();
+        $nueva = password_hash($nuevo_password, PASSWORD_DEFAULT);
+        $sql = "UPDATE `users` SET `password` = :valor WHERE `id`= :id";
+        $statement = $conexion->prepare($sql);
+        $statement->bindParam(":valor", $nueva);
+        $statement->bindParam(":id", $id);
+        if ($statement->execute()) {
+            return true;
+        } else {
+			return false;
+        }
+    }
+	
+    function generate_string($strength = 16) {
+        $input = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $input_length = strlen($input);
+        $random_string = '';
+        for($i = 0; $i < $strength; $i++) {
+            $random_character = $input[mt_rand(0, $input_length - 1)];
+            $random_string .= $random_character;
+        }
+        return $random_string;
     }
 
 
