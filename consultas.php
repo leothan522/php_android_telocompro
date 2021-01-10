@@ -129,6 +129,7 @@ class Consultas
     public function recuperarPassword($email)
     {
         $rows = null;
+        $resuldato = true;
         $database = new Conexion();
         $conexion = $database->get_conexion();
         $sql = "SELECT * FROM `users` WHERE `email` = '$email'";
@@ -137,20 +138,31 @@ class Consultas
         $rows = $statement->fetch();
         if ($rows) {
             $id = $rows['id'];
-            $nuevo_password = $this->generate_string(8);
-            $nueva = password_hash($nuevo_password, PASSWORD_DEFAULT);
-            $sql = "UPDATE `users` SET `password` = :valor WHERE `id`= :id";
-            $statement = $conexion->prepare($sql);
-            $statement->bindParam(":valor", $nueva);
-            $statement->bindParam(":id", $id);
-            if ($statement->execute()) {
-                //$rows = $statement->fetch();
-                return $nuevo_password;
-            } else {
-                return false;
+            $two_factor_recovery_codes = $rows['two_factor_recovery_codes'];
+             $dia = date("Y-m-d");
+             if (!empty($two_factor_recovery_codes)){
+                 if ($dia == $two_factor_recovery_codes){
+                     $resuldato = false;
+                 }
+             }
+            if ($resuldato) {
+                $nuevo_password = $this->generate_string(8);
+                $nueva = password_hash($nuevo_password, PASSWORD_DEFAULT);
+                $sql = "UPDATE `users` SET `password` = :valor , `two_factor_recovery_codes` = :dia WHERE `id`= :id";
+                $statement = $conexion->prepare($sql);
+                $statement->bindParam(":valor", $nueva);
+                $statement->bindParam(":dia", $dia);
+                $statement->bindParam(":id", $id);
+                if ($statement->execute()) {
+                    return $nuevo_password;
+                } else {
+                    return false;
+                }
+            }else{
+                return "true";
             }
         } else {
-            return false;
+            return "false";
         }
     }
 	
