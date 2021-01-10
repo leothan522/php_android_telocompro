@@ -126,7 +126,7 @@ class Consultas
 
     }
 
-    public function validarEmail($email)
+    public function recuperarPassword($email)
     {
         $rows = null;
         $database = new Conexion();
@@ -136,13 +136,25 @@ class Consultas
         $statement->execute();
         $rows = $statement->fetch();
         if ($rows) {
-            return $rows['id'];
+            $id = $rows['id'];
+            $nuevo_password = $this->generate_string(8);
+            $nueva = password_hash($nuevo_password, PASSWORD_DEFAULT);
+            $sql = "UPDATE `users` SET `password` = :valor WHERE `id`= :id";
+            $statement = $conexion->prepare($sql);
+            $statement->bindParam(":valor", $nueva);
+            $statement->bindParam(":id", $id);
+            if ($statement->execute()) {
+                //$rows = $statement->fetch();
+                return $nueva;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
     }
 	
-	public function recuperarPassword($id, $nuevo_password)
+	/*public function recuperarPassword($id, $nuevo_password)
     {
         $rows = null;
         $database = new Conexion();
@@ -158,7 +170,7 @@ class Consultas
 			return false;
         }
     }
-	
+	*/
     function generate_string($strength = 16) {
         $input = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $input_length = strlen($input);

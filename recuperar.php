@@ -8,7 +8,7 @@ require 'vendor/autoload.php';
 require 'Constantes.php';
 require_once("consultas.php");
 $consultas = new Consultas();
-$resultado = false;
+//$resultado = false;
 $data=array();
 
 if (empty($_POST['email'])) {
@@ -17,23 +17,16 @@ if (empty($_POST['email'])) {
     echo(json_encode($data));
 }else{
 	
-	$validar_email = $consultas->validarEmail($_POST['email']);
-	if($validar_email){
-		$nueva_clave = $consultas->generate_string(8);
-        $resultado = $consultas->recuperarPassword($validar_email, $nueva_clave);
-        if ($resultado){
-            $data['error'] = false;
-            $data['message'] = "La nueva clave fue enviada por correo.";
-        }else{
-            $data['error'] = true;
-            $data['message'] = "Algo salio mal al intentar enviar.";
-        }
+	$resultado = $consultas->recuperarPassword($_POST['email']);
+	if($resultado){
+        $data['error'] = false;
+        $data['message'] = "La nueva clave fue enviada por correo.";
         echo(json_encode($data));
 
         // Al pasar true habilitamos las excepciones
         $mail = new PHPMailer(true);
 
-        try {
+        //try {
             // Ajustes del Servidor
             //$mail->SMTPDebug = SMTP::DEBUG_SERVER; // Comenta esto antes de producción
             $mail->isSMTP();
@@ -51,14 +44,16 @@ if (empty($_POST['email'])) {
             // Mensaje
             $mail->isHTML(true);
             $mail->Subject = 'Nuevo Password';
-            $mail->Body = 'Hola, este es tu nuevo Password: <h4 style="color: blue">'.$nueva_clave.'</h4>';
+            $mail->Body = 'Hola, este es tu nuevo Password: <h4 style="color: blue">'.$resultado.'</h4>';
             $mail->AltBody = 'Este es un mensaje para los clientes que no soportan HTML.';
 
             $mail->send();
             //echo 'Se envio el mensaje';
-        } catch (Exception $e) {
+        /*} catch (Exception $e) {
             //echo "Algo salio mal al intentar enviar: {$mail->ErrorInfo}";
-        }
+        $data['error'] = true;
+        $data['message'] = "Algo salio mal al intentar enviar.";
+        }*/
 
     }else{
 		$data['error'] = true;
