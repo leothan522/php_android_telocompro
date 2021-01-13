@@ -20,7 +20,7 @@
     <form action="login.php" method="post">
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="password" placeholder="Password">
-        <input type="submit" value="enviar">
+		<input type="submit" value="enviar">
     </form>
 </p>
 <p>Recuperar

@@ -139,7 +139,7 @@ class Consultas
         if ($rows) {
             $id = $rows['id'];
             $two_factor_recovery_codes = $rows['two_factor_recovery_codes'];
-             $dia = date("Y-m-d");
+             $dia = date("i");
              if (!empty($two_factor_recovery_codes)){
                  if ($dia == $two_factor_recovery_codes){
                      $resuldato = false;
