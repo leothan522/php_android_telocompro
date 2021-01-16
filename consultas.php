@@ -17,6 +17,15 @@ class Consultas
         $rows = $statement->fetch();
         if ($rows) {
             if (password_verify($password, $rows['password'])) {
+                $sql = "SELECT * FROM `clientes` WHERE `users_id` = ".$rows['id'];
+                $statement = $conexion->prepare($sql);
+                $statement->execute();
+                $cliente = $statement->fetch();
+                if ($cliente){
+                    $rows['id_cliente'] = true;
+                }else{
+                    $rows['id_cliente'] = false;
+                }
                 return $rows;
             }
             return false;
@@ -55,7 +64,7 @@ class Consultas
             $statement->bindParam(":valor", $email);
             $statement->execute();
             $rows = $statement->fetch();
-
+            $rows['id_cliente'] = false;
             return $rows;
         } else {
             return false;

@@ -13,6 +13,7 @@ if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password'])
         $data['id'] = $usuario['id'];
         $data['name'] = ucwords($usuario['name']);
         $data['email'] = $usuario['email'];
+        $data['id_cliente'] = $usuario['id_cliente'];
         $data['error'] = false;
         $data['message'] = "Registrado correctamente";
     }else{
