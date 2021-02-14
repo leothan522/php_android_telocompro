@@ -13,6 +13,7 @@
         <input type="text" name="name" placeholder="Nombre">
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="password" placeholder="Password">
+        <input type="text" name="telefono" placeholder="Telefono">
         <input type="submit" value="enviar">
     </form>
 </p>

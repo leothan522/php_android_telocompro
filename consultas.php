@@ -16,25 +16,34 @@ class Consultas
         $statement->execute();
         $rows = $statement->fetch();
         if ($rows) {
+
+            $sql = "SELECT * FROM `clientes` WHERE `users_id` = ".$rows['id'];
+            $statement = $conexion->prepare($sql);
+            $statement->execute();
+            $cliente = $statement->fetch();
+            if ($cliente){
+                $rows['datos_cliente'] = true;
+            }else{
+                $rows['datos_cliente'] = false;
+            }
+
             if (password_verify($password, $rows['password'])) {
-                $sql = "SELECT * FROM `clientes` WHERE `users_id` = ".$rows['id'];
-                $statement = $conexion->prepare($sql);
-                $statement->execute();
-                $cliente = $statement->fetch();
-                if ($cliente){
-                    $rows['id_cliente'] = true;
-                }else{
-                    $rows['id_cliente'] = false;
-                }
+                $rows['success'] = true;
+                return $rows;
+            }else{
+                $rows['success'] = false;
+                $rows['error'] = "password";
                 return $rows;
             }
-            return false;
+
         } else {
-            return false;
+            $rows['success'] = false;
+            $rows['error'] = "email";
+            return $rows;
         }
     }
 
-    public function registrar($name, $email, $password)
+    public function registrar($name, $email, $password, $telefono)
     {
         $database = new Conexion();
         $conexion = $database->get_conexion();
@@ -50,11 +59,12 @@ class Consultas
 
         $sql = "INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `two_factor_secret`, 
         `two_factor_recovery_codes`, `remember_token`, `current_team_id`, `profile_photo_path`, `plataforma`, `created_at`, `updated_at`) 
-            VALUES (NULL, :name, :email, NULL, :password, NULL, NULL, NULL, NULL, NULL, :plataforma, :fecha, :fecha);";
+            VALUES (NULL, :name, :email, NULL, :password, :telefono, NULL, NULL, NULL, NULL, :plataforma, :fecha, :fecha);";
         $statement = $conexion->prepare($sql);
         $statement->bindParam(":name", $name);
         $statement->bindParam(":email", $email);
         $statement->bindParam(":password", $password);
+        $statement->bindParam(":telefono", $telefono);
         $statement->bindParam(":plataforma", $plataforma);
         $statement->bindParam(":fecha", $date);
         if ($statement->execute()) {
@@ -64,7 +74,7 @@ class Consultas
             $statement->bindParam(":valor", $email);
             $statement->execute();
             $rows = $statement->fetch();
-            $rows['id_cliente'] = false;
+            $rows['datos_cliente'] = false;
             return $rows;
         } else {
             return false;
